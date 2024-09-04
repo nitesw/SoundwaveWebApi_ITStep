@@ -65,7 +65,7 @@ namespace SoundwaveWebApi_ITStep.Controllers
             return Ok();
         }
 
-        [HttpPut("archive")]
+        [HttpPatch("archive")]
         public IActionResult Archive(int id)
         {
             var track = ctx.Tracks.Find(id);
@@ -78,13 +78,40 @@ namespace SoundwaveWebApi_ITStep.Controllers
 
             return Ok();
         }
-        [HttpPut("unarchive")]
+        [HttpPatch("unarchive")]
         public IActionResult UnArchive(int id)
         {
             var track = ctx.Tracks.Find(id);
             if (track == null) return NotFound();
 
             track.IsArchived = false;
+
+            ctx.Tracks.Update(track);
+            ctx.SaveChanges();
+
+            return Ok();
+        }
+
+        [HttpPatch("public")]
+        public IActionResult Public(int id)
+        {
+            var track = ctx.Tracks.Find(id);
+            if (track == null) return NotFound();
+
+            track.IsPublic = true;
+
+            ctx.Tracks.Update(track);
+            ctx.SaveChanges();
+
+            return Ok();
+        }
+        [HttpPatch("private")]
+        public IActionResult Private(int id)
+        {
+            var track = ctx.Tracks.Find(id);
+            if (track == null) return NotFound();
+
+            track.IsPublic = false;
 
             ctx.Tracks.Update(track);
             ctx.SaveChanges();
