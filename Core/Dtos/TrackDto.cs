@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,5 +23,6 @@ namespace Core.Dtos
         public int GenreId { get; set; }
         public string? GenreName { get; set; }
         public string? UserId { get; set; }
+        public ICollection<PlaylistDto>? Playlists { get; set; }
     }
 }

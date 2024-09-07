@@ -15,7 +15,15 @@ namespace Core.MapperProfiles
         {
             CreateMap<CreateTrackDto, Track>().ForMember(x => x.UploadDate, opt => opt.MapFrom(src => DateTime.Now));
             CreateMap<EditTrackDto, Track>().ForMember(x => x.UploadDate, opt => opt.Ignore());
-            CreateMap<TrackDto, Track>().ReverseMap();
+            CreateMap<Track, TrackDto>()
+                .ForMember(x => x.Playlists, opt => opt.MapFrom(src => src.PlaylistTracks.Select(x => x.Playlist)))
+                .ReverseMap();
+
+            CreateMap<CreatePlaylistDto, Playlist>();
+            CreateMap<EditPlaylistDto, Playlist>();
+            CreateMap<Playlist, PlaylistDto>()
+                .ForMember(x => x.Tracks, opt => opt.MapFrom(src => src.PlaylistTracks.Select(x => x.Track)))
+                .ReverseMap();
         }
     }
 }

@@ -25,7 +25,12 @@ namespace SoundwaveWebApi_ITStep.Controllers
         [HttpGet("all")]
         public IActionResult GetAll()
         {
-            var tracks = _mapper.Map<List<TrackDto>>(_ctx.Tracks.Include(x => x.Genre).ToList());
+            var tracks = _mapper.Map<List<TrackDto>>(
+                _ctx.Tracks
+                .Include(x => x.Genre)
+                .Include(x => x.PlaylistTracks!)
+                .ThenInclude(x => x.Playlist)
+                .ToList());
 
             return Ok(tracks);
         }
@@ -33,7 +38,10 @@ namespace SoundwaveWebApi_ITStep.Controllers
         [HttpGet("getTrack")]
         public IActionResult Get(int id)
         {
-            var track = _ctx.Tracks.Find(id);
+            var track = _ctx.Tracks
+                .Include(x => x.PlaylistTracks!)
+                .ThenInclude(x => x.Playlist)
+                .FirstOrDefault(x => x.Id == id);
             if (track == null) return NotFound();
 
             _ctx.Entry(track).Reference(x => x.Genre).Load();
