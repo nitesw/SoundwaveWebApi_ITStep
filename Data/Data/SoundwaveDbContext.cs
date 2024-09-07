@@ -3,6 +3,7 @@ using Data.Entities;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Data.DataSeeder;
+using System.Reflection;
 
 namespace Data.Data
 {
@@ -18,15 +19,13 @@ namespace Data.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<PlaylistTrack>().HasKey(x => new { x.PlaylistId, x.TrackId });
-
-            modelBuilder.Entity<Track>().HasIndex(s => s.Title).IsUnique();
+            base.OnModelCreating(modelBuilder);            
 
             modelBuilder.SeedGenres();
             // TODO: on load change userId to admin userId
             modelBuilder.SeedTracks();
+
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }  
     }
 }
