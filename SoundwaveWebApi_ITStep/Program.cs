@@ -1,8 +1,9 @@
-
 using Core.Interfaces;
 using Core.MapperProfiles;
 using Core.Services;
 using Data.Data;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace SoundwaveWebApi_ITStep
@@ -25,6 +26,10 @@ namespace SoundwaveWebApi_ITStep
             builder.Services.AddDbContext<SoundwaveDbContext>(options => 
                 options.UseSqlServer(connectionString)
             );
+
+            builder.Services.AddFluentValidationAutoValidation();
+            builder.Services.AddFluentValidationClientsideAdapters();
+            builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 
             builder.Services.AddAutoMapper(typeof(AppProfile));
 
