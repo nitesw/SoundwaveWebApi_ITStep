@@ -29,6 +29,7 @@ namespace SoundwaveWebApi_ITStep
             builder.Services.AddAutoMapper(typeof(AppProfile));
 
             builder.Services.AddScoped<IMusicService, MusicService>();
+            builder.Services.AddScoped<IPlaylistService, PlaylistService>();
 
             var app = builder.Build();
 

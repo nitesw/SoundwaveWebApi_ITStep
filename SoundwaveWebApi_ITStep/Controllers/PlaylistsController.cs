@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core.Dtos;
+using Core.Interfaces;
 using Data.Data;
 using Data.Entities;
 using Microsoft.AspNetCore.Http;
@@ -12,68 +13,45 @@ namespace SoundwaveWebApi_ITStep.Controllers
     [ApiController]
     public class PlaylistsController : ControllerBase
     {
-        private readonly SoundwaveDbContext _ctx;
-        private readonly IMapper _mapper;
+        private readonly IPlaylistService playlistService;
 
-        public PlaylistsController(SoundwaveDbContext _ctx, IMapper _mapper)
+        public PlaylistsController(IPlaylistService playlistService)
         {
-            this._ctx = _ctx;
-            this._mapper = _mapper;
+            this.playlistService = playlistService;
         }
 
         [HttpGet("all")]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var playlists = _mapper.Map<List<PlaylistDto>>(
-                _ctx.Playlists
-                .Include(x => x.PlaylistTracks!)
-                .ThenInclude(x => x.Track));
-
-            return Ok(playlists);
+            return Ok(await playlistService.GetAll());
         }
 
         [HttpGet("getPlaylist")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            var playlist = _ctx.Playlists
-                .Include(x => x.PlaylistTracks!)
-                .ThenInclude(x => x.Track)
-                .FirstOrDefault(x => x.Id == id);
-            if (playlist == null) return NotFound();
-
-            return Ok(_mapper.Map<PlaylistDto>(playlist));
+            return Ok(await playlistService.Get(id));
         }
 
         [HttpPost("create")]
-        public IActionResult Create(CreatePlaylistDto model)
+        public async Task<IActionResult> Create(CreatePlaylistDto model)
         {
-            if (!ModelState.IsValid) return BadRequest();
-
-            _ctx.Playlists.Add(_mapper.Map<Playlist>(model));
-            _ctx.SaveChanges();
+            await playlistService.Create(model);
 
             return Ok();
         }
 
         [HttpPut("edit")]
-        public IActionResult Edit(EditPlaylistDto model)
+        public async Task<IActionResult> Edit(EditPlaylistDto model)
         {
-            if (!ModelState.IsValid) return BadRequest();
-
-            _ctx.Playlists.Update(_mapper.Map<Playlist>(model));
-            _ctx.SaveChanges();
+            await playlistService.Edit(model);
 
             return Ok();
         }
 
         [HttpDelete("delete")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var playlist = _ctx.Playlists.Find(id);
-            if (playlist == null) return NotFound();
-
-            _ctx.Playlists.Remove(playlist);
-            _ctx.SaveChanges();
+            await playlistService.Delete(id);
 
             return Ok();
         }
