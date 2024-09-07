@@ -1,4 +1,5 @@
 
+using Core.MapperProfiles;
 using Data.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,6 +23,8 @@ namespace SoundwaveWebApi_ITStep
             builder.Services.AddDbContext<SoundwaveDbContext>(options => 
                 options.UseSqlServer(connectionString)
             );
+
+            builder.Services.AddAutoMapper(typeof(AppProfile));
 
             var app = builder.Build();
 

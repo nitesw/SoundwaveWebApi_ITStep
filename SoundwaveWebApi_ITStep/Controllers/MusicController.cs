@@ -1,7 +1,11 @@
-﻿using Data.Data;
+﻿using AutoMapper;
+using Core.Dtos;
+using Data.Data;
 using Data.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace SoundwaveWebApi_ITStep.Controllers
 {
@@ -9,46 +13,52 @@ namespace SoundwaveWebApi_ITStep.Controllers
     [ApiController]
     public class MusicController : ControllerBase
     {
-        private readonly SoundwaveDbContext ctx;
+        private readonly SoundwaveDbContext _ctx;
+        private readonly IMapper _mapper;
 
-        public MusicController(SoundwaveDbContext ctx)
+        public MusicController(SoundwaveDbContext _ctx, IMapper _mapper)
         {
-            this.ctx = ctx;
+            this._ctx = _ctx;
+            this._mapper = _mapper;
         }
 
         [HttpGet("all")]
         public IActionResult GetAll()
         {
-            return Ok(ctx.Tracks.ToList());
+            var tracks = _mapper.Map<List<TrackDto>>(_ctx.Tracks.Include(x => x.Genre).ToList());
+
+            return Ok(tracks);
         }
 
         [HttpGet("getTrack")]
         public IActionResult Get(int id)
         {
-            var track = ctx.Tracks.Find(id);
+            var track = _ctx.Tracks.Find(id);
             if (track == null) return NotFound();
 
-            return Ok(track);
+            _ctx.Entry(track).Reference(x => x.Genre).Load();
+
+            return Ok(_mapper.Map<TrackDto>(track));
         }
 
         [HttpPost("create")]
-        public IActionResult Create(Track model)
+        public IActionResult Create(CreateTrackDto model)
         {
             if (!ModelState.IsValid) return BadRequest();
 
-            ctx.Tracks.Add(model);
-            ctx.SaveChanges();
+            _ctx.Tracks.Add(_mapper.Map<Track>(model));
+            _ctx.SaveChanges();
 
             return Ok();
         }
 
         [HttpPut("edit")]
-        public IActionResult Edit(Track model)
+        public IActionResult Edit(EditTrackDto model)
         {
             if (!ModelState.IsValid) return BadRequest();
 
-            ctx.Tracks.Update(model);
-            ctx.SaveChanges();
+            _ctx.Tracks.Update(_mapper.Map<Track>(model));
+            _ctx.SaveChanges();
 
             return Ok();
         }
@@ -56,11 +66,11 @@ namespace SoundwaveWebApi_ITStep.Controllers
         [HttpDelete("delete")]
         public IActionResult Delete(int id)
         {
-            var track = ctx.Tracks.Find(id);
+            var track = _ctx.Tracks.Find(id);
             if (track == null) return NotFound();
 
-            ctx.Tracks.Remove(track);
-            ctx.SaveChanges();
+            _ctx.Tracks.Remove(track);
+            _ctx.SaveChanges();
 
             return Ok();
         }
@@ -68,26 +78,26 @@ namespace SoundwaveWebApi_ITStep.Controllers
         [HttpPatch("archive")]
         public IActionResult Archive(int id)
         {
-            var track = ctx.Tracks.Find(id);
+            var track = _ctx.Tracks.Find(id);
             if (track == null) return NotFound();
 
             track.IsArchived = true;
 
-            ctx.Tracks.Update(track);
-            ctx.SaveChanges();
+            _ctx.Tracks.Update(track);
+            _ctx.SaveChanges();
 
             return Ok();
         }
-        [HttpPatch("unarchive")]
-        public IActionResult UnArchive(int id)
+        [HttpPatch("restore")]
+        public IActionResult Restore(int id)
         {
-            var track = ctx.Tracks.Find(id);
+            var track = _ctx.Tracks.Find(id);
             if (track == null) return NotFound();
 
             track.IsArchived = false;
 
-            ctx.Tracks.Update(track);
-            ctx.SaveChanges();
+            _ctx.Tracks.Update(track);
+            _ctx.SaveChanges();
 
             return Ok();
         }
@@ -95,26 +105,26 @@ namespace SoundwaveWebApi_ITStep.Controllers
         [HttpPatch("public")]
         public IActionResult Public(int id)
         {
-            var track = ctx.Tracks.Find(id);
+            var track = _ctx.Tracks.Find(id);
             if (track == null) return NotFound();
 
             track.IsPublic = true;
 
-            ctx.Tracks.Update(track);
-            ctx.SaveChanges();
+            _ctx.Tracks.Update(track);
+            _ctx.SaveChanges();
 
             return Ok();
         }
         [HttpPatch("private")]
         public IActionResult Private(int id)
         {
-            var track = ctx.Tracks.Find(id);
+            var track = _ctx.Tracks.Find(id);
             if (track == null) return NotFound();
 
             track.IsPublic = false;
 
-            ctx.Tracks.Update(track);
-            ctx.SaveChanges();
+            _ctx.Tracks.Update(track);
+            _ctx.SaveChanges();
 
             return Ok();
         }
