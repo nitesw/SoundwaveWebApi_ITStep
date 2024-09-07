@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core.Dtos;
+using Core.Interfaces;
 using Data.Data;
 using Data.Entities;
 using Microsoft.AspNetCore.Http;
@@ -13,126 +14,75 @@ namespace SoundwaveWebApi_ITStep.Controllers
     [ApiController]
     public class MusicController : ControllerBase
     {
-        private readonly SoundwaveDbContext _ctx;
-        private readonly IMapper _mapper;
+        private readonly IMusicService musicService;
 
-        public MusicController(SoundwaveDbContext _ctx, IMapper _mapper)
+        public MusicController(IMusicService musicService)
         {
-            this._ctx = _ctx;
-            this._mapper = _mapper;
+            this.musicService = musicService;
         }
 
         [HttpGet("all")]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var tracks = _mapper.Map<List<TrackDto>>(
-                _ctx.Tracks
-                .Include(x => x.Genre)
-                .Include(x => x.PlaylistTracks!)
-                .ThenInclude(x => x.Playlist)
-                .ToList());
-
-            return Ok(tracks);
+            return Ok(await musicService.GetAll());
         }
 
         [HttpGet("getTrack")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            var track = _ctx.Tracks
-                .Include(x => x.PlaylistTracks!)
-                .ThenInclude(x => x.Playlist)
-                .FirstOrDefault(x => x.Id == id);
-            if (track == null) return NotFound();
-
-            _ctx.Entry(track).Reference(x => x.Genre).Load();
-
-            return Ok(_mapper.Map<TrackDto>(track));
+            return Ok(await musicService.Get(id));
         }
 
         [HttpPost("create")]
-        public IActionResult Create(CreateTrackDto model)
+        public async Task<IActionResult> Create(CreateTrackDto model)
         {
-            if (!ModelState.IsValid) return BadRequest();
-
-            _ctx.Tracks.Add(_mapper.Map<Track>(model));
-            _ctx.SaveChanges();
+            await musicService.Create(model);
 
             return Ok();
         }
 
         [HttpPut("edit")]
-        public IActionResult Edit(EditTrackDto model)
+        public async Task<IActionResult> Edit(EditTrackDto model)
         {
-            if (!ModelState.IsValid) return BadRequest();
-
-            _ctx.Tracks.Update(_mapper.Map<Track>(model));
-            _ctx.SaveChanges();
+            await musicService.Edit(model);
 
             return Ok();
         }
         
         [HttpDelete("delete")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var track = _ctx.Tracks.Find(id);
-            if (track == null) return NotFound();
-
-            _ctx.Tracks.Remove(track);
-            _ctx.SaveChanges();
+            await musicService.Delete(id);
 
             return Ok();
         }
 
         [HttpPatch("archive")]
-        public IActionResult Archive(int id)
+        public async Task<IActionResult> Archive(int id)
         {
-            var track = _ctx.Tracks.Find(id);
-            if (track == null) return NotFound();
-
-            track.IsArchived = true;
-
-            _ctx.Tracks.Update(track);
-            _ctx.SaveChanges();
+            await musicService.Archive(id);
 
             return Ok();
         }
         [HttpPatch("restore")]
-        public IActionResult Restore(int id)
+        public async Task<IActionResult> Restore(int id)
         {
-            var track = _ctx.Tracks.Find(id);
-            if (track == null) return NotFound();
-
-            track.IsArchived = false;
-
-            _ctx.Tracks.Update(track);
-            _ctx.SaveChanges();
+            await musicService.Restore(id);
 
             return Ok();
         }
 
-        [HttpPatch("public")]
-        public IActionResult Public(int id)
+        [HttpPatch("makePublic")]
+        public async Task<IActionResult> MakePublic(int id)
         {
-            var track = _ctx.Tracks.Find(id);
-            if (track == null) return NotFound();
-
-            track.IsPublic = true;
-
-            _ctx.Tracks.Update(track);
-            _ctx.SaveChanges();
+            await musicService.MakePublic(id);
 
             return Ok();
         }
-        [HttpPatch("private")]
-        public IActionResult Private(int id)
+        [HttpPatch("makePrivate")]
+        public async Task<IActionResult> MakePrivate(int id)
         {
-            var track = _ctx.Tracks.Find(id);
-            if (track == null) return NotFound();
-
-            track.IsPublic = false;
-
-            _ctx.Tracks.Update(track);
-            _ctx.SaveChanges();
+            await musicService.MakePrivate(id);
 
             return Ok();
         }

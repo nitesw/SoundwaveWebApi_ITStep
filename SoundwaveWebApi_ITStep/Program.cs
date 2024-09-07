@@ -1,5 +1,7 @@
 
+using Core.Interfaces;
 using Core.MapperProfiles;
+using Core.Services;
 using Data.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,6 +27,8 @@ namespace SoundwaveWebApi_ITStep
             );
 
             builder.Services.AddAutoMapper(typeof(AppProfile));
+
+            builder.Services.AddScoped<IMusicService, MusicService>();
 
             var app = builder.Build();
 
