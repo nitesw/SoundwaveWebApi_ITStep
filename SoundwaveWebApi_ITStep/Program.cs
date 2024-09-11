@@ -5,6 +5,7 @@ using Data.Data;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
+using SoundwaveWebApi_ITStep.Middlewares;
 
 namespace SoundwaveWebApi_ITStep
 {
@@ -45,10 +46,11 @@ namespace SoundwaveWebApi_ITStep
                 app.UseSwaggerUI();
             }
 
+            app.UseMiddleware<ErrorHandlerMiddleware>();
+
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core.Dtos;
+using Core.Exceptions;
 using Core.Interfaces;
 using Data.Data;
 using Data.Entities;
@@ -7,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,7 +28,9 @@ namespace Core.Services
         public async Task Archive(int id)
         {
             var track = await _ctx.Tracks.FindAsync(id);
-            if (track == null) return;
+            if (track == null) throw new HttpException(
+                $"Track with id {id} not found.",
+                HttpStatusCode.NotFound);
 
             track.IsArchived = true;
             await _ctx.SaveChangesAsync();
@@ -41,7 +45,9 @@ namespace Core.Services
         public async Task Delete(int id)
         {
             var track = await _ctx.Tracks.FindAsync(id);
-            if (track == null) return;
+            if (track == null) throw new HttpException(
+                $"Track with id {id} not found.",
+                HttpStatusCode.NotFound);
 
             _ctx.Tracks.Remove(track);
             await _ctx.SaveChangesAsync();
@@ -59,7 +65,9 @@ namespace Core.Services
                 .Include(x => x.PlaylistTracks!)
                 .ThenInclude(x => x.Playlist)
                 .FirstOrDefaultAsync(x => x.Id == id);
-            if (track == null) return null;
+            if (track == null) throw new HttpException(
+                $"Track with id {id} not found.",
+                HttpStatusCode.NotFound);
 
             await _ctx.Entry(track).Reference(x => x.Genre).LoadAsync();
 
@@ -80,7 +88,9 @@ namespace Core.Services
         public async Task MakePrivate(int id)
         {
             var track = await _ctx.Tracks.FindAsync(id);
-            if (track == null) return;
+            if (track == null) throw new HttpException(
+                $"Track with id {id} not found.",
+                HttpStatusCode.NotFound);
 
             track.IsPublic = false;
             await _ctx.SaveChangesAsync();
@@ -89,7 +99,9 @@ namespace Core.Services
         public async Task MakePublic(int id)
         {
             var track = await _ctx.Tracks.FindAsync(id);
-            if (track == null) return;
+            if (track == null) throw new HttpException(
+                $"Track with id {id} not found.",
+                HttpStatusCode.NotFound);
 
             track.IsPublic = true;
             await _ctx.SaveChangesAsync();
@@ -98,7 +110,9 @@ namespace Core.Services
         public async Task Restore(int id)
         {
             var track = await _ctx.Tracks.FindAsync(id);
-            if (track == null) return;
+            if (track == null) throw new HttpException(
+                $"Track with id {id} not found.",
+                HttpStatusCode.NotFound);
 
             track.IsArchived = false;
             await _ctx.SaveChangesAsync();
