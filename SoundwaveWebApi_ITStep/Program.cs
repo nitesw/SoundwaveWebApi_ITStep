@@ -37,6 +37,10 @@ namespace SoundwaveWebApi_ITStep
             builder.Services.AddScoped<IMusicService, MusicService>();
             builder.Services.AddScoped<IPlaylistService, PlaylistService>();
 
+            // Custom exception handler
+            builder.Services.AddExceptionHandler<HttpExceptionHandler>();
+            builder.Services.AddProblemDetails();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -46,7 +50,8 @@ namespace SoundwaveWebApi_ITStep
                 app.UseSwaggerUI();
             }
 
-            app.UseMiddleware<ErrorHandlerMiddleware>();
+            //app.UseMiddleware<ErrorHandlerMiddleware>();
+            app.UseExceptionHandler();
 
             app.UseHttpsRedirection();
 
