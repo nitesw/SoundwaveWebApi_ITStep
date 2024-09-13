@@ -2,6 +2,7 @@
 using Core.Dtos;
 using Core.Exceptions;
 using Core.Interfaces;
+using Core.Specifications;
 using Data.Data;
 using Data.Entities;
 using Data.Repositories;
@@ -18,11 +19,17 @@ namespace Core.Services
     public class PlaylistService : IPlaylistService
     {
         private readonly IRepository<Playlist> playlistRepo;
+        private readonly IRepository<PlaylistTrack> playlistTrackRepo;
         private readonly IMapper _mapper;
 
-        public PlaylistService(IRepository<Playlist> playlistRepo, IMapper _mapper)
+        public PlaylistService(
+            IRepository<Playlist> playlistRepo,
+            IRepository<PlaylistTrack> playlistTrackRepo,
+            IMapper _mapper
+            )
         {
             this.playlistRepo = playlistRepo;
+            this.playlistTrackRepo = playlistTrackRepo;
             this._mapper = _mapper;
         }
 
@@ -34,10 +41,13 @@ namespace Core.Services
 
         public async Task Delete(int id)
         {
-            var playlist = await playlistRepo.GetById(id);
+            var playlist = await playlistRepo.GetItemBySpec(new PlaylistSpecification.DeleteById(id));
             if (playlist == null) throw new HttpException(
                 $"Playlist with id {id} not found.",
                 HttpStatusCode.NotFound);
+
+            if (playlist.PlaylistTracks != null)
+                await playlistTrackRepo.RemoveRange(playlist.PlaylistTracks);
 
             await playlistRepo.Delete(playlist);
             await playlistRepo.Save();
@@ -51,10 +61,7 @@ namespace Core.Services
 
         public async Task<PlaylistDto> Get(int id)
         {
-            var playlist = await playlistRepo.GetById(id);
-                //.Include(x => x.PlaylistTracks!)
-                //.ThenInclude(x => x.Track)
-                //.FirstOrDefaultAsync(x => x.Id == id);
+            var playlist = await playlistRepo.GetItemBySpec(new PlaylistSpecification.ById(id));
             if (playlist == null) throw new HttpException(
                 $"Playlist with id {id} not found.",
                 HttpStatusCode.NotFound);
@@ -64,10 +71,7 @@ namespace Core.Services
 
         public async Task<IEnumerable<PlaylistDto>> GetAll()
         {
-            var playlists = await playlistRepo.GetAll();
-                //.Include(x => x.PlaylistTracks!)
-                //.ThenInclude(x => x.Track)
-                //.ToListAsync();
+            var playlists = await playlistRepo.GetListBySpec(new PlaylistSpecification.All());
 
             return _mapper.Map<List<PlaylistDto>>(playlists);
         }

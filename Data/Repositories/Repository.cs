@@ -1,4 +1,6 @@
-﻿using Data.Data;
+﻿using Ardalis.Specification;
+using Ardalis.Specification.EntityFrameworkCore;
+using Data.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -25,34 +27,6 @@ namespace Data.Repositories
         public async Task<IEnumerable<TEntity>> GetAll()
         {
             return await dbSet.ToListAsync();
-        }
-
-        public async Task<IEnumerable<TEntity>> Get(
-            Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-            string includeProperties = "")
-        {
-            IQueryable<TEntity> query = dbSet;
-
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            }
-
-            foreach (var includeProperty in includeProperties.Split
-                (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                query = query.Include(includeProperty);
-            }
-
-            if (orderBy != null)
-            {
-                return await orderBy(query).ToListAsync();
-            }
-            else
-            {
-                return await query.ToListAsync();
-            }
         }
 
         public async Task<TEntity?> GetById(object id)
@@ -92,5 +66,30 @@ namespace Data.Repositories
                 context.Entry(entityToUpdate).State = EntityState.Modified;
             });
         }
+
+        public async Task<IEnumerable<TEntity>> GetListBySpec(ISpecification<TEntity> specification)
+        {
+            return await ApplySpecification(specification).ToListAsync();
+        }
+
+        public async Task<TEntity?> GetItemBySpec(ISpecification<TEntity> specification)
+        {
+            return await ApplySpecification(specification).FirstOrDefaultAsync();
+        }
+
+        private IQueryable<TEntity> ApplySpecification(ISpecification<TEntity> specification)
+        {
+            var evaluator = new SpecificationEvaluator();
+            return evaluator.GetQuery(dbSet, specification);
+        }
+
+        public Task RemoveRange(IEnumerable<TEntity> entities)
+        {
+            return Task.Run(() =>
+            {
+                dbSet.RemoveRange(entities);
+            });
+        }
+
     }
 }
