@@ -4,6 +4,7 @@ using Core.Exceptions;
 using Core.Interfaces;
 using Data.Data;
 using Data.Entities;
+using Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -16,106 +17,106 @@ namespace Core.Services
 {
     public class MusicService : IMusicService
     {
-        private readonly SoundwaveDbContext _ctx;
+        private readonly IRepository<Track> trackRepo;
         private readonly IMapper _mapper;
 
-        public MusicService(SoundwaveDbContext _ctx, IMapper _mapper)
+        public MusicService(IRepository<Track> trackRepo, IMapper _mapper)
         {
-            this._ctx = _ctx;
+            this.trackRepo = trackRepo;
             this._mapper = _mapper;
         }
 
         public async Task Archive(int id)
         {
-            var track = await _ctx.Tracks.FindAsync(id);
+            var track = await trackRepo.GetById(id);
             if (track == null) throw new HttpException(
                 $"Track with id {id} not found.",
                 HttpStatusCode.NotFound);
 
             track.IsArchived = true;
-            await _ctx.SaveChangesAsync();
+            await trackRepo.Save();
         }
 
         public async Task Create(CreateTrackDto model)
         {
-            _ctx.Tracks.Add(_mapper.Map<Track>(model));
-            await _ctx.SaveChangesAsync();
+            await trackRepo.Insert(_mapper.Map<Track>(model));
+            await trackRepo.Save();
         }
 
         public async Task Delete(int id)
         {
-            var track = await _ctx.Tracks.FindAsync(id);
+            var track = await trackRepo.GetById(id);
             if (track == null) throw new HttpException(
                 $"Track with id {id} not found.",
                 HttpStatusCode.NotFound);
 
-            _ctx.Tracks.Remove(track);
-            await _ctx.SaveChangesAsync();
+            await trackRepo.Delete(track);
+            await trackRepo.Save();
         }
 
         public async Task Edit(EditTrackDto model)
         {
-            _ctx.Tracks.Update(_mapper.Map<Track>(model));
-            await _ctx.SaveChangesAsync();
+            await trackRepo.Update(_mapper.Map<Track>(model));
+            await trackRepo.Save();
         }
 
         public async Task<TrackDto> Get(int id)
         {
-            var track = await _ctx.Tracks
-                .Include(x => x.PlaylistTracks!)
-                .ThenInclude(x => x.Playlist)
-                .FirstOrDefaultAsync(x => x.Id == id);
+            var track = await trackRepo.GetById(id);
+                //.Include(x => x.PlaylistTracks!)
+                //.ThenInclude(x => x.Playlist)
+                //.FirstOrDefaultAsync(x => x.Id == id);
             if (track == null) throw new HttpException(
                 $"Track with id {id} not found.",
                 HttpStatusCode.NotFound);
 
-            await _ctx.Entry(track).Reference(x => x.Genre).LoadAsync();
+            //await _ctx.Entry(track).Reference(x => x.Genre).LoadAsync();
 
             return _mapper.Map<TrackDto>(track);
         }
 
         public async Task<IEnumerable<TrackDto>> GetAll()
         {
-            var tracks = await _ctx.Tracks
-                .Include(x => x.Genre)
-                .Include(x => x.PlaylistTracks!)
-                .ThenInclude(x => x.Playlist)
-                .ToListAsync();
+            var tracks = await trackRepo.GetAll();
+                //.Include(x => x.Genre)
+                //.Include(x => x.PlaylistTracks!)
+                //.ThenInclude(x => x.Playlist)
+                //.ToListAsync();
 
             return _mapper.Map<List<TrackDto>>(tracks);
         }
 
         public async Task MakePrivate(int id)
         {
-            var track = await _ctx.Tracks.FindAsync(id);
+            var track = await trackRepo.GetById(id);
             if (track == null) throw new HttpException(
                 $"Track with id {id} not found.",
                 HttpStatusCode.NotFound);
 
             track.IsPublic = false;
-            await _ctx.SaveChangesAsync();
+            await trackRepo.Save();
         }
 
         public async Task MakePublic(int id)
         {
-            var track = await _ctx.Tracks.FindAsync(id);
+            var track = await trackRepo.GetById(id);
             if (track == null) throw new HttpException(
                 $"Track with id {id} not found.",
                 HttpStatusCode.NotFound);
 
             track.IsPublic = true;
-            await _ctx.SaveChangesAsync();
+            await trackRepo.Save();
         }
 
         public async Task Restore(int id)
         {
-            var track = await _ctx.Tracks.FindAsync(id);
+            var track = await trackRepo.GetById(id);
             if (track == null) throw new HttpException(
                 $"Track with id {id} not found.",
                 HttpStatusCode.NotFound);
 
             track.IsArchived = false;
-            await _ctx.SaveChangesAsync();
+            await trackRepo.Save();
         }
     }
 }

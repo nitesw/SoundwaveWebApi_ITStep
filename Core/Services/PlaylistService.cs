@@ -4,6 +4,7 @@ using Core.Exceptions;
 using Core.Interfaces;
 using Data.Data;
 using Data.Entities;
+using Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -16,44 +17,44 @@ namespace Core.Services
 {
     public class PlaylistService : IPlaylistService
     {
-        private readonly SoundwaveDbContext _ctx;
+        private readonly IRepository<Playlist> playlistRepo;
         private readonly IMapper _mapper;
 
-        public PlaylistService(SoundwaveDbContext _ctx, IMapper _mapper)
+        public PlaylistService(IRepository<Playlist> playlistRepo, IMapper _mapper)
         {
-            this._ctx = _ctx;
+            this.playlistRepo = playlistRepo;
             this._mapper = _mapper;
         }
 
         public async Task Create(CreatePlaylistDto model)
         {
-            _ctx.Playlists.Add(_mapper.Map<Playlist>(model));
-            await _ctx.SaveChangesAsync();
+            await playlistRepo.Insert(_mapper.Map<Playlist>(model));
+            await playlistRepo.Save();
         }
 
         public async Task Delete(int id)
         {
-            var playlist = await _ctx.Playlists.FindAsync(id);
+            var playlist = await playlistRepo.GetById(id);
             if (playlist == null) throw new HttpException(
                 $"Playlist with id {id} not found.",
                 HttpStatusCode.NotFound);
 
-            _ctx.Playlists.Remove(playlist);
-            await _ctx.SaveChangesAsync();
+            await playlistRepo.Delete(playlist);
+            await playlistRepo.Save();
         }
 
         public async Task Edit(EditPlaylistDto model)
         {
-            _ctx.Playlists.Update(_mapper.Map<Playlist>(model));
-            await _ctx.SaveChangesAsync();
+            await playlistRepo.Update(_mapper.Map<Playlist>(model));
+            await playlistRepo.Save();
         }
 
         public async Task<PlaylistDto> Get(int id)
         {
-            var playlist = await _ctx.Playlists
-                .Include(x => x.PlaylistTracks!)
-                .ThenInclude(x => x.Track)
-                .FirstOrDefaultAsync(x => x.Id == id);
+            var playlist = await playlistRepo.GetById(id);
+                //.Include(x => x.PlaylistTracks!)
+                //.ThenInclude(x => x.Track)
+                //.FirstOrDefaultAsync(x => x.Id == id);
             if (playlist == null) throw new HttpException(
                 $"Playlist with id {id} not found.",
                 HttpStatusCode.NotFound);
@@ -63,10 +64,10 @@ namespace Core.Services
 
         public async Task<IEnumerable<PlaylistDto>> GetAll()
         {
-            var playlists = await _ctx.Playlists
-                .Include(x => x.PlaylistTracks!)
-                .ThenInclude(x => x.Track)
-                .ToListAsync();
+            var playlists = await playlistRepo.GetAll();
+                //.Include(x => x.PlaylistTracks!)
+                //.ThenInclude(x => x.Track)
+                //.ToListAsync();
 
             return _mapper.Map<List<PlaylistDto>>(playlists);
         }
