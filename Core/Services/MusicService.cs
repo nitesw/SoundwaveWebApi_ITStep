@@ -59,6 +59,7 @@ namespace Core.Services
 
             if (track.PlaylistTracks != null)
                 await playlistTrackRepo.RemoveRange(track.PlaylistTracks);
+
             await trackRepo.Delete(track);
             await trackRepo.Save();
         }

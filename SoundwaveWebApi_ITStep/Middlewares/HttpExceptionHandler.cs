@@ -16,7 +16,8 @@ namespace SoundwaveWebApi_ITStep.Middlewares
             var problemDetails = new ProblemDetails
             {
                 Status = (int)httpException.StatusCode,
-                Title = httpException.Message
+                Title = "Error",
+                Detail = httpException.Message
             };
 
             httpContext.Response.StatusCode = problemDetails.Status.Value;

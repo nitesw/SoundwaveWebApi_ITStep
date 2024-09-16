@@ -2,8 +2,11 @@ using Core.Interfaces;
 using Core.MapperProfiles;
 using Core.Services;
 using Data.Data;
+using Data.Entities;
+using Data.Repositories;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SoundwaveWebApi_ITStep.Middlewares;
 
@@ -28,14 +31,22 @@ namespace SoundwaveWebApi_ITStep
                 options.UseSqlServer(connectionString)
             );
 
+            builder.Services.AddIdentity<User, IdentityRole>(options =>
+                options.SignIn.RequireConfirmedAccount = false)
+                .AddDefaultTokenProviders()
+                .AddEntityFrameworkStores<SoundwaveDbContext>();
+
             builder.Services.AddFluentValidationAutoValidation();
             builder.Services.AddFluentValidationClientsideAdapters();
             builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 
             builder.Services.AddAutoMapper(typeof(AppProfile));
 
+            builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
             builder.Services.AddScoped<IMusicService, MusicService>();
             builder.Services.AddScoped<IPlaylistService, PlaylistService>();
+            builder.Services.AddScoped<IAccountsService, AccountsService>();
 
             // Custom exception handler
             builder.Services.AddExceptionHandler<HttpExceptionHandler>();
