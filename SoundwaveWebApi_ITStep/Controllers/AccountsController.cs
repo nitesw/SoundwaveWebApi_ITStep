@@ -33,8 +33,7 @@ namespace SoundwaveWebApi_ITStep.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto model)
         {
-            await accountsService.Login(model);
-            return Ok();
+            return Ok(await accountsService.Login(model));
         }
 
         [HttpPost("logout")]

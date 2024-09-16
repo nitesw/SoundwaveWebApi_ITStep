@@ -16,22 +16,15 @@ using System.Threading.Tasks;
 
 namespace Core.Services
 {
-    public class MusicService : IMusicService
+    public class MusicService(
+        IRepository<Track> trackRepo,
+        IRepository<PlaylistTrack> playlistTrackRepo,
+        IMapper _mapper
+            ) : IMusicService
     {
-        private readonly IRepository<Track> trackRepo;
-        private readonly IRepository<PlaylistTrack> playlistTrackRepo;
-        private readonly IMapper _mapper;
-
-        public MusicService(
-            IRepository<Track> trackRepo, 
-            IRepository<PlaylistTrack> playlistTrackRepo, 
-            IMapper _mapper
-            )
-        {
-            this.trackRepo = trackRepo;
-            this.playlistTrackRepo = playlistTrackRepo;
-            this._mapper = _mapper;
-        }
+        private readonly IRepository<Track> trackRepo = trackRepo;
+        private readonly IRepository<PlaylistTrack> playlistTrackRepo = playlistTrackRepo;
+        private readonly IMapper _mapper = _mapper;
 
         public async Task Archive(int id)
         {

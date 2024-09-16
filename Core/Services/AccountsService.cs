@@ -14,18 +14,17 @@ using System.Threading.Tasks;
 
 namespace Core.Services
 {
-    public class AccountsService : IAccountsService
+    public class AccountsService(
+        UserManager<User> userManager,
+        IRepository<User> userRepo,
+        IMapper mapper,
+        IJwtService jwtService
+            ) : IAccountsService
     {
-        private readonly UserManager<User> userManager;
-        private readonly IRepository<User> userRepo;
-        private readonly IMapper mapper;
-
-        public AccountsService(UserManager<User> userManager, IRepository<User> userRepo, IMapper _mapper)
-        {
-            this.userManager = userManager;
-            this.userRepo = userRepo;
-            mapper = _mapper;
-        }
+        private readonly UserManager<User> userManager = userManager;
+        private readonly IRepository<User> userRepo = userRepo;
+        private readonly IMapper mapper = mapper;
+        private readonly IJwtService jwtService = jwtService;
 
         public async Task Register(RegisterDto model)
         {
@@ -40,12 +39,7 @@ namespace Core.Services
                 throw new HttpException($"Username {model.UserName} is already in use.", HttpStatusCode.BadRequest);
             }
 
-            var user = new User()
-            {
-                Email = model.Email,
-                UserName = model.UserName,
-                PhoneNumber = model.PhoneNumber
-            };
+            var user = mapper.Map<User>(model);
 
             var result = await userManager.CreateAsync(user, model.Password);
 
@@ -56,12 +50,17 @@ namespace Core.Services
             }
         }
 
-        public async Task Login(LoginDto model)
+        public async Task<LoginResponse> Login(LoginDto model)
         {
             var user = await userManager.FindByNameAsync(model.UserName);
 
             if (user == null || !await userManager.CheckPasswordAsync(user, model.Password))
                 throw new HttpException("Invalid login or password.", HttpStatusCode.BadRequest);
+
+            return new LoginResponse
+            {
+                Token = jwtService.CreateToken(jwtService.GetClaims(user))
+            };
         }
 
         public Task Logout()

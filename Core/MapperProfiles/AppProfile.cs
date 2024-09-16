@@ -25,6 +25,8 @@ namespace Core.MapperProfiles
                 .ForMember(x => x.Tracks, opt => opt.MapFrom(src => src.PlaylistTracks.Select(x => x.Track)))
                 .ReverseMap();
 
+            CreateMap<RegisterDto, User>()
+                .ForMember(x => x.UserName, opt => opt.MapFrom(src => src.UserName));
             CreateMap<User, UserDto>().ReverseMap();
         }
     }
