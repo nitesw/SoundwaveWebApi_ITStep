@@ -2,6 +2,7 @@
 using Core.Dtos;
 using Core.Exceptions;
 using Core.Interfaces;
+using Core.Specifications;
 using Data.Entities;
 using Data.Repositories;
 using Microsoft.AspNetCore.Identity;
@@ -70,7 +71,7 @@ namespace Core.Services
 
         public async Task<IEnumerable<UserDto>> GetAll()
         {
-            var users = await userRepo.GetAll();
+            var users = await userRepo.GetListBySpec(new UserSpecification.All());
 
             return mapper.Map<List<UserDto>>(users);
         }
