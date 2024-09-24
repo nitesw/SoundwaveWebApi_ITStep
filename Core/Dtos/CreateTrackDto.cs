@@ -11,7 +11,7 @@ namespace Core.Dtos
     {
         public string Title { get; set; }
         public string? Description { get; set; }
-        public string TrackUrl { get; set; }
+        public IFormFile Track { get; set; }
         public IFormFile Image { get; set; }
         public bool IsPublic { get; set; }
         public bool IsArchived { get; set; }

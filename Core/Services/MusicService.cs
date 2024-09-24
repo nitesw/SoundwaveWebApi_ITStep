@@ -44,6 +44,7 @@ namespace Core.Services
             var entity = _mapper.Map<Track>(model);
 
             entity.ImgUrl = await filesService.SaveFile(model.Image, true);
+            entity.TrackUrl = await filesService.SaveFile(model.Track, false);
 
             await trackRepo.Insert(entity);
             await trackRepo.Save();
@@ -74,13 +75,31 @@ namespace Core.Services
                 {
                     var updatedTrack = _mapper.Map<Track>(model);
                     updatedTrack.ImgUrl = await filesService.EditFile(track.ImgUrl, model.Image, true);
-                    await trackRepo.Update(updatedTrack);
+                    if (model.Track != null)
+                    {
+                        updatedTrack.TrackUrl = await filesService.EditFile(track.TrackUrl, model.Track, false);
+                        await trackRepo.Update(updatedTrack);
+                    }
+                    else
+                    {
+                        updatedTrack.TrackUrl = track.TrackUrl;
+                        await trackRepo.Update(updatedTrack);
+                    }
                 }
                 else
                 {
                     var updatedTrack = _mapper.Map<Track>(model);
                     updatedTrack.ImgUrl = track.ImgUrl;
-                    await trackRepo.Update(updatedTrack);
+                    if (model.Track != null)
+                    {
+                        updatedTrack.TrackUrl = await filesService.EditFile(track.TrackUrl, model.Track, false);
+                        await trackRepo.Update(updatedTrack);
+                    }
+                    else
+                    {
+                        updatedTrack.TrackUrl = track.TrackUrl;
+                        await trackRepo.Update(updatedTrack);
+                    }
                 }
                 
                 await trackRepo.Save();
