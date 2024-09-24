@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,7 @@ namespace Core.Dtos
         public string Title { get; set; }
         public string? Description { get; set; }
         public string TrackUrl { get; set; }
-        public string ImgUrl { get; set; }
+        public IFormFile Image { get; set; }
         public bool IsPublic { get; set; }
         public bool IsArchived { get; set; }
         public string? AdditionalTags { get; set; }

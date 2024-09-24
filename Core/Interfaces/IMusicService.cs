@@ -16,7 +16,5 @@ namespace Core.Interfaces
         Task Delete(int id);
         Task Archive(int id);
         Task Restore(int id);
-        Task MakePublic(int id);
-        Task MakePrivate(int id);
     }
 }

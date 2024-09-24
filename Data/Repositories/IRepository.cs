@@ -17,5 +17,6 @@ namespace Data.Repositories
         Task<IEnumerable<TEntity>> GetListBySpec(ISpecification<TEntity> specification);
 
         Task RemoveRange(IEnumerable<TEntity> entities);
+        Task Detach(TEntity entity);
     }
 }

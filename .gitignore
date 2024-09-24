@@ -361,4 +361,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/SoundwaveWebApi_ITStep/wwwroot/images
+/SoundwaveWebApi_ITStep/wwwroot/images/*

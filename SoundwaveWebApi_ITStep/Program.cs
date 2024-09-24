@@ -1,6 +1,7 @@
 using Core;
 using Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using SoundwaveWebApi_ITStep.ServiceExtensions;
 
 namespace SoundwaveWebApi_ITStep
@@ -46,6 +47,8 @@ namespace SoundwaveWebApi_ITStep
 
             //app.UseMiddleware<ErrorHandlerMiddleware>();
             app.UseExceptionHandler();
+
+            app.UseStaticFiles();
 
             app.UseHttpsRedirection();
 

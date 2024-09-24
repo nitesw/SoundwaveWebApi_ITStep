@@ -8,7 +8,7 @@
         public string TrackUrl { get; set; }
         public string ImgUrl { get; set; }
         public bool IsPublic { get; set; }
-        public bool IsArchived { get; set; }
+        public bool? IsArchived { get; set; }
         public string? AdditionalTags { get; set; }
         public DateTime UploadDate { get; set; }
         public string? ArtistName { get; set; }

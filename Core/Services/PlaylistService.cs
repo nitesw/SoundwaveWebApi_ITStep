@@ -19,16 +19,22 @@ namespace Core.Services
     public class PlaylistService(
         IRepository<Playlist> playlistRepo,
         IRepository<PlaylistTrack> playlistTrackRepo,
-        IMapper _mapper
+        IMapper _mapper,
+        IFilesService filesService
             ) : IPlaylistService
     {
         private readonly IRepository<Playlist> playlistRepo = playlistRepo;
         private readonly IRepository<PlaylistTrack> playlistTrackRepo = playlistTrackRepo;
         private readonly IMapper _mapper = _mapper;
+        private readonly IFilesService filesService = filesService;
 
         public async Task Create(CreatePlaylistDto model)
         {
-            await playlistRepo.Insert(_mapper.Map<Playlist>(model));
+            var entity = _mapper.Map<Playlist>(model);
+
+            entity.ImgUrl = await filesService.SaveFile(model.Image, true);
+
+            await playlistRepo.Insert(entity);
             await playlistRepo.Save();
         }
 
@@ -48,8 +54,26 @@ namespace Core.Services
 
         public async Task Edit(EditPlaylistDto model)
         {
-            await playlistRepo.Update(_mapper.Map<Playlist>(model));
-            await playlistRepo.Save();
+            var playlist = await playlistRepo.GetById(model.Id);
+            if (playlist != null)
+            {
+                await playlistRepo.Detach(playlist);
+
+                if (model.Image != null)
+                {
+                    var updatedPlaylist = _mapper.Map<Playlist>(model);
+                    updatedPlaylist.ImgUrl = await filesService.EditFile(playlist.ImgUrl, model.Image, true);
+                    await playlistRepo.Update(updatedPlaylist);
+                }
+                else
+                {
+                    var updatedPlaylist = _mapper.Map<Playlist>(model);
+                    updatedPlaylist.ImgUrl = playlist.ImgUrl;
+                    await playlistRepo.Update(updatedPlaylist);
+                }
+
+                await playlistRepo.Save();
+            }
         }
 
         public async Task<PlaylistDto> Get(int id)

@@ -91,5 +91,16 @@ namespace Data.Repositories
             });
         }
 
+        public async Task Detach(TEntity entity)
+        {
+            await Task.Run(() =>
+            {
+                var entry = context.Entry(entity);
+                if (entry != null)
+                {
+                    entry.State = EntityState.Detached;
+                }
+            });
+        }
     }
 }

@@ -19,12 +19,14 @@ namespace Core.Services
     public class MusicService(
         IRepository<Track> trackRepo,
         IRepository<PlaylistTrack> playlistTrackRepo,
-        IMapper _mapper
+        IMapper _mapper,
+        IFilesService filesService
             ) : IMusicService
     {
         private readonly IRepository<Track> trackRepo = trackRepo;
         private readonly IRepository<PlaylistTrack> playlistTrackRepo = playlistTrackRepo;
         private readonly IMapper _mapper = _mapper;
+        private readonly IFilesService filesService = filesService;
 
         public async Task Archive(int id)
         {
@@ -39,7 +41,11 @@ namespace Core.Services
 
         public async Task Create(CreateTrackDto model)
         {
-            await trackRepo.Insert(_mapper.Map<Track>(model));
+            var entity = _mapper.Map<Track>(model);
+
+            entity.ImgUrl = await filesService.SaveFile(model.Image, true);
+
+            await trackRepo.Insert(entity);
             await trackRepo.Save();
         }
 
@@ -59,9 +65,28 @@ namespace Core.Services
 
         public async Task Edit(EditTrackDto model)
         {
-            await trackRepo.Update(_mapper.Map<Track>(model));
-            await trackRepo.Save();
+            var track = await trackRepo.GetById(model.Id);
+            if (track != null)
+            {
+                await trackRepo.Detach(track);
+
+                if (model.Image != null)
+                {
+                    var updatedTrack = _mapper.Map<Track>(model);
+                    updatedTrack.ImgUrl = await filesService.EditFile(track.ImgUrl, model.Image, true);
+                    await trackRepo.Update(updatedTrack);
+                }
+                else
+                {
+                    var updatedTrack = _mapper.Map<Track>(model);
+                    updatedTrack.ImgUrl = track.ImgUrl;
+                    await trackRepo.Update(updatedTrack);
+                }
+                
+                await trackRepo.Save();
+            }
         }
+
 
         public async Task<TrackDto> Get(int id)
         {
@@ -78,28 +103,6 @@ namespace Core.Services
             var tracks = await trackRepo.GetListBySpec(new TrackSpecification.All());
 
             return _mapper.Map<List<TrackDto>>(tracks);
-        }
-
-        public async Task MakePrivate(int id)
-        {
-            var track = await trackRepo.GetById(id);
-            if (track == null) throw new HttpException(
-                $"Track with id {id} not found.",
-                HttpStatusCode.NotFound);
-
-            track.IsPublic = false;
-            await trackRepo.Save();
-        }
-
-        public async Task MakePublic(int id)
-        {
-            var track = await trackRepo.GetById(id);
-            if (track == null) throw new HttpException(
-                $"Track with id {id} not found.",
-                HttpStatusCode.NotFound);
-
-            track.IsPublic = true;
-            await trackRepo.Save();
         }
 
         public async Task Restore(int id)
