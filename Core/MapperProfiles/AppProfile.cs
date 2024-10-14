@@ -28,6 +28,8 @@ namespace Core.MapperProfiles
             CreateMap<RegisterDto, User>()
                 .ForMember(x => x.UserName, opt => opt.MapFrom(src => src.UserName));
             CreateMap<User, UserDto>().ReverseMap();
+
+            CreateMap<Genre, GenreDto>().ReverseMap();
         }
     }
 }

@@ -10,6 +10,7 @@ namespace Core.Interfaces
     public interface IMusicService
     {
         Task<IEnumerable<TrackDto>> GetAll();
+        Task<IEnumerable<GenreDto>> GetGenres();
         Task<TrackDto> Get(int id);
         Task Create(CreateTrackDto model);
         Task Edit(EditTrackDto model);

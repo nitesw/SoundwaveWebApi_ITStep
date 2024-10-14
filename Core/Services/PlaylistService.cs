@@ -48,6 +48,8 @@ namespace Core.Services
             if (playlist.PlaylistTracks != null)
                 await playlistTrackRepo.RemoveRange(playlist.PlaylistTracks);
 
+            await filesService.DeleteFile(playlist.ImgUrl);
+
             await playlistRepo.Delete(playlist);
             await playlistRepo.Save();
         }

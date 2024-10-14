@@ -36,6 +36,9 @@ namespace SoundwaveWebApi_ITStep
             builder.Services.AddJWT(builder.Configuration);
             builder.Services.AddSwaggerJWT();
 
+            // Add CORS
+            builder.Services.AddCorsPolicies();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -52,6 +55,9 @@ namespace SoundwaveWebApi_ITStep
 
             app.UseHttpsRedirection();
 
+            app.UseCors("front-end-cors-policy");
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();

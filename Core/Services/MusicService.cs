@@ -18,12 +18,14 @@ namespace Core.Services
 {
     public class MusicService(
         IRepository<Track> trackRepo,
+        IRepository<Genre> genreRepo,
         IRepository<PlaylistTrack> playlistTrackRepo,
         IMapper _mapper,
         IFilesService filesService
             ) : IMusicService
     {
         private readonly IRepository<Track> trackRepo = trackRepo;
+        private readonly IRepository<Genre> genreRepo = genreRepo;
         private readonly IRepository<PlaylistTrack> playlistTrackRepo = playlistTrackRepo;
         private readonly IMapper _mapper = _mapper;
         private readonly IFilesService filesService = filesService;
@@ -59,6 +61,9 @@ namespace Core.Services
 
             if (track.PlaylistTracks != null)
                 await playlistTrackRepo.RemoveRange(track.PlaylistTracks);
+
+            await filesService.DeleteFile(track.ImgUrl);
+            await filesService.DeleteFile(track.TrackUrl);
 
             await trackRepo.Delete(track);
             await trackRepo.Save();
@@ -122,6 +127,11 @@ namespace Core.Services
             var tracks = await trackRepo.GetListBySpec(new TrackSpecification.All());
 
             return _mapper.Map<List<TrackDto>>(tracks);
+        }
+
+        public async Task<IEnumerable<GenreDto>> GetGenres()
+        {
+            return _mapper.Map<IEnumerable<GenreDto>>(await genreRepo.GetAll());
         }
 
         public async Task Restore(int id)
