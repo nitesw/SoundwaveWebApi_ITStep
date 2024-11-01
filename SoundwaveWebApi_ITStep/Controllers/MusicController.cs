@@ -53,7 +53,7 @@ namespace SoundwaveWebApi_ITStep.Controllers
             return Ok();
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPut("edit")]
         public async Task<IActionResult> Edit([FromForm] EditTrackDto model)
         {

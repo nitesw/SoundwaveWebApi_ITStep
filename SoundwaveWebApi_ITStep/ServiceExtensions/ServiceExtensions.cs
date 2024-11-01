@@ -73,7 +73,9 @@ namespace SoundwaveWebApi_ITStep.ServiceExtensions
                                   policy =>
                                   {
                                       policy.WithOrigins("https://localhost:4200",
-                                                          "http://localhost:4200");
+                                                          "http://localhost:4200",
+                                                          "http://localhost:5173",
+                                                          "https://localhost:5173");
                                       policy.AllowAnyMethod();
                                       policy.AllowAnyHeader();
                                   });
