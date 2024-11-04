@@ -16,6 +16,7 @@ namespace Core.Dtos
         public IFormFile? Image { get; set; }
         public bool IsPublic { get; set; }
         public bool IsArchived { get; set; }
+        public DateTime UploadDate { get; set; }
         public string? AdditionalTags { get; set; }
         public string? ArtistName { get; set; }
 

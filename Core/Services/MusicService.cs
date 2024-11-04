@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Ardalis.Specification;
+using AutoMapper;
 using Core.Dtos;
 using Core.Exceptions;
 using Core.Interfaces;
