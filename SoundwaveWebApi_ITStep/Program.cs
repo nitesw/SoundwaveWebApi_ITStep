@@ -14,7 +14,7 @@ namespace SoundwaveWebApi_ITStep
 
             builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = 50 * 1024 * 1024);
 
-            string connectionString = builder.Configuration.GetConnectionString("LocalDb")!;
+            string connectionString = builder.Configuration.GetConnectionString("SomeeDb")!;
 
             // Add services to the container.
 
