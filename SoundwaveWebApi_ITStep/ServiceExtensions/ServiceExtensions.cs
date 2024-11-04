@@ -72,12 +72,13 @@ namespace SoundwaveWebApi_ITStep.ServiceExtensions
                 options.AddPolicy(name: "front-end-cors-policy",
                                   policy =>
                                   {
-                                      policy.WithOrigins("https://localhost:4200",
+                                      /*policy.WithOrigins("https://localhost:4200",
                                                           "http://localhost:4200",
                                                           "http://localhost:5173",
-                                                          "https://localhost:5173");
+                                                          "https://localhost:5173");*/
                                       policy.AllowAnyMethod();
                                       policy.AllowAnyHeader();
+                                      policy.AllowAnyOrigin();
                                   });
             });
         }

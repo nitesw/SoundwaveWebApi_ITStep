@@ -50,8 +50,11 @@ namespace SoundwaveWebApi_ITStep
                 app.UseSwaggerUI();
             }
 
-            //app.UseMiddleware<ErrorHandlerMiddleware>();
-            app.UseExceptionHandler();
+            if (app.Environment.IsProduction())
+            {
+                //app.UseMiddleware<ErrorHandlerMiddleware>();
+                app.UseExceptionHandler();
+            }
 
             app.UseStaticFiles();
 
