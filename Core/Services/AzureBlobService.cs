@@ -27,28 +27,33 @@ namespace Core.Services
 
         public async Task DeleteFile(string path)
         {
-            /*BlobContainerClient client;
-            if (isImage)
+            const string baseUrl = "https://soundwavestorage.blob.core.windows.net/";
+            if (path.StartsWith(baseUrl, StringComparison.OrdinalIgnoreCase))
+            {
+                path = path.Substring(baseUrl.Length);
+            }
+
+            var pathParts = path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            string directory = pathParts[0];
+            string fileName = string.Join("/", pathParts.Skip(1));
+
+            BlobContainerClient client;
+            if (directory == images)
                 client = new BlobContainerClient(connectionString, images);
             else
                 client = new BlobContainerClient(connectionString, audios);
 
-            client.
-            await client.CreateIfNotExistsAsync();
+            await client.DeleteBlobIfExistsAsync(fileName);
             await client.SetAccessPolicyAsync(PublicAccessType.Blob);
-
-            string root = environment.WebRootPath;
-            string fullPath = root + path;
-
-            if (File.Exists(fullPath))
-                return Task.Run(() => File.Delete(fullPath));
-
-            return Task.CompletedTask;*/
         }
 
-        public Task<string> EditFile(string oldPath, IFormFile newFile, bool isImage)
+        public async Task<string> EditFile(string oldPath, IFormFile newFile, bool isImage)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("\n\n\n" + oldPath);
+            Console.WriteLine(newFile);
+            Console.WriteLine(isImage + "\n\n\n");
+            await DeleteFile(oldPath);
+            return await SaveFile(newFile, isImage);
         }
 
         public async Task<string> SaveFile(IFormFile file, bool isImage)
