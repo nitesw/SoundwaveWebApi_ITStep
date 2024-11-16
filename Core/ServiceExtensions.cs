@@ -20,7 +20,7 @@ namespace Core
             services.AddScoped<IPlaylistService, PlaylistService>();
             services.AddScoped<IAccountsService, AccountsService>();
             services.AddScoped<IJwtService, JwtService>();
-            services.AddScoped<IFilesService, FilesService>();
+            services.AddScoped<IFilesService, AzureBlobService>();
         }
         public static void AddAutoMapper(this IServiceCollection services)
         {
