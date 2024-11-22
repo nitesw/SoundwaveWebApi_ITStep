@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using SoundwaveWebApi_ITStep.Extensions;
 using System;
 using System.Collections.Generic;
 
@@ -16,6 +17,7 @@ namespace SoundwaveWebApi_ITStep.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class MusicController : ControllerBase
     {
         private readonly IMusicService musicService;
@@ -25,26 +27,28 @@ namespace SoundwaveWebApi_ITStep.Controllers
             this.musicService = musicService;
         }
 
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [AllowAnonymous]
         [HttpGet("all")]
         public async Task<IActionResult> GetAll()
         {
             return Ok(await musicService.GetAll());
         }
+
+        [AllowAnonymous]
         [HttpGet("genres")]
         public async Task<IActionResult> GetGenres()
         {
             return Ok(await musicService.GetGenres());
         }
 
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [AllowAnonymous]
         [HttpGet("getTrack")]
         public async Task<IActionResult> Get(int id)
         {
             return Ok(await musicService.Get(id));
         }
 
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = Roles.ADMIN, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromForm] CreateTrackDto model)
         {
@@ -53,7 +57,7 @@ namespace SoundwaveWebApi_ITStep.Controllers
             return Ok();
         }
 
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = Roles.ADMIN, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPut("edit")]
         public async Task<IActionResult> Edit([FromForm] EditTrackDto model)
         {
@@ -62,7 +66,7 @@ namespace SoundwaveWebApi_ITStep.Controllers
             return Ok();
         }
 
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = Roles.ADMIN, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpDelete("delete")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -71,7 +75,7 @@ namespace SoundwaveWebApi_ITStep.Controllers
             return Ok();
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = Roles.ADMIN, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPatch("archive")]
         public async Task<IActionResult> Archive(int id)
         {
@@ -79,7 +83,7 @@ namespace SoundwaveWebApi_ITStep.Controllers
 
             return Ok();
         }
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = Roles.ADMIN, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPatch("restore")]
         public async Task<IActionResult> Restore(int id)
         {

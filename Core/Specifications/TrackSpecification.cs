@@ -29,6 +29,7 @@ namespace Core.Specifications
                 Query
                     .Include(x => x.PlaylistTracks!)
                     .ThenInclude(x => x.Playlist)
+                    .Include(x => x.User)
                     .Include(x => x.Genre);
             }
         }

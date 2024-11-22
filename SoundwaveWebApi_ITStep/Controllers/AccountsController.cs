@@ -1,8 +1,11 @@
 ﻿using Core.Dtos;
 using Core.Interfaces;
 using Core.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SoundwaveWebApi_ITStep.Extensions;
 
 namespace SoundwaveWebApi_ITStep.Controllers
 {
@@ -17,6 +20,7 @@ namespace SoundwaveWebApi_ITStep.Controllers
             this.accountsService = accountsService;
         }
 
+        [Authorize(Roles = Roles.ADMIN, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("all")]
         public async Task<IActionResult> GetAll()
         {

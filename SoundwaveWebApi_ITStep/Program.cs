@@ -2,6 +2,7 @@ using Core;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using SoundwaveWebApi_ITStep.Extensions;
 using SoundwaveWebApi_ITStep.ServiceExtensions;
 
 namespace SoundwaveWebApi_ITStep
@@ -42,6 +43,13 @@ namespace SoundwaveWebApi_ITStep
             builder.Services.AddCorsPolicies();
 
             var app = builder.Build();
+
+            // Seed initial data
+            using (var scope = app.Services.CreateScope())
+            {
+                scope.ServiceProvider.SeedRoles().Wait();
+                scope.ServiceProvider.SeedAdmin(app.Configuration).Wait();
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

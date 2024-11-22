@@ -23,7 +23,7 @@ namespace Core.Dtos
         public int GenreId { get; set; }
         public string? GenreName { get; set; }
         public string? UserId { get; set; }
-        public string? UserUserName { get; set; }
+        public string? UserName { get; set; }
         public ICollection<PlaylistDto>? Playlists { get; set; }
     }
 }
