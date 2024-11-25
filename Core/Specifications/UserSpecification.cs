@@ -19,5 +19,15 @@ namespace Core.Specifications
                     .Include(x => x.Playlists);
             }
         }
+        internal class GetUser : Specification<User>
+        {
+            public GetUser(string id)
+            {
+                Query
+                    .Where(x => x.Id == id)
+                    .Include(x => x.Tracks)
+                    .Include(x => x.Playlists);
+            }
+        }
     }
 }

@@ -1,16 +1,10 @@
-﻿using Data.Entities;
+﻿using Core.Models;
+using Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using System.Reflection;
 
 namespace SoundwaveWebApi_ITStep.Extensions
 {
-    public static class Roles
-    {
-        public const string ADMIN = "admin";
-        public const string PROUSER = "pro";
-        public const string USER = "user";
-    }
-    
     public static class Seeder
     {
         public static async Task SeedRoles(this IServiceProvider app)

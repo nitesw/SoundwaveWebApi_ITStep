@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core.Dtos;
 using Core.Interfaces;
+using Core.Models;
 using Data.Data;
 using Data.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

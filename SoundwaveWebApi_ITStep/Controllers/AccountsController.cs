@@ -1,5 +1,6 @@
 ﻿using Core.Dtos;
 using Core.Interfaces;
+using Core.Models;
 using Core.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -25,6 +26,13 @@ namespace SoundwaveWebApi_ITStep.Controllers
         public async Task<IActionResult> GetAll()
         {
             return Ok(await accountsService.GetAll());
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("getUser")]
+        public async Task<IActionResult> Get(string id)
+        {
+            return Ok(await accountsService.Get(id));
         }
 
         [HttpPost("register")]

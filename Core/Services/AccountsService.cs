@@ -2,12 +2,14 @@
 using Core.Dtos;
 using Core.Exceptions;
 using Core.Interfaces;
+using Core.Models;
 using Core.Specifications;
 using Data.Entities;
 using Data.Repositories;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -48,6 +50,10 @@ namespace Core.Services
             {
                 var error = result.Errors.First();
                 throw new HttpException(error.Description, HttpStatusCode.BadRequest);
+            } 
+            else
+            {
+                await userManager.AddToRoleAsync(user, Roles.USER);
             }
         }
 
@@ -74,6 +80,13 @@ namespace Core.Services
             var users = await userRepo.GetListBySpec(new UserSpecification.All());
 
             return mapper.Map<List<UserDto>>(users);
+        }
+
+        public async Task<UserDto> Get(string id)
+        {
+            var user = await userRepo.GetItemBySpec(new UserSpecification.GetUser(id));
+
+            return mapper.Map<UserDto>(user);
         }
     }
 }

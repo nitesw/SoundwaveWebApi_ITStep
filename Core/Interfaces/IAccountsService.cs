@@ -13,5 +13,6 @@ namespace Core.Interfaces
         Task<LoginResponse> Login(LoginDto model);
         Task Logout();
         Task<IEnumerable<UserDto>> GetAll();
+        Task<UserDto> Get(string id);
     }
 }
