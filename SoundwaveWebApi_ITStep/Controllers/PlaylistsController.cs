@@ -25,7 +25,7 @@ namespace SoundwaveWebApi_ITStep.Controllers
             this.playlistService = playlistService;
         }
 
-        [Authorize(Roles = Roles.ADMIN, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = $"{Roles.ADMIN},{Roles.PROUSER},{Roles.USER}", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("all")]
         public async Task<IActionResult> GetAll()
         {
