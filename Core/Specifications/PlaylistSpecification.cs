@@ -18,7 +18,8 @@ namespace Core.Specifications
                 Query
                     .Where(x => x.Id == id)
                     .Include(x => x.PlaylistTracks!)
-                    .ThenInclude(x => x.Track);
+                    .ThenInclude(x => x.Track)
+                    .Include(x => x.User);
             }
         }
         internal class All : Specification<Playlist>
@@ -27,7 +28,8 @@ namespace Core.Specifications
             {
                 Query
                     .Include(x => x.PlaylistTracks!)
-                    .ThenInclude(x => x.Track);
+                    .ThenInclude(x => x.Track)
+                    .Include(x => x.User);
             }
         }
         internal class DeleteById : Specification<Playlist>
