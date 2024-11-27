@@ -49,7 +49,7 @@ namespace SoundwaveWebApi_ITStep.Controllers
             return Ok(await musicService.Get(id));
         }
 
-        [Authorize(Roles = Roles.ADMIN, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = $"{Roles.ADMIN},{Roles.PROUSER}", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromForm] CreateTrackDto model)
         {
@@ -58,7 +58,7 @@ namespace SoundwaveWebApi_ITStep.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = Roles.ADMIN, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = $"{Roles.ADMIN},{Roles.PROUSER}", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPut("edit")]
         public async Task<IActionResult> Edit([FromForm] EditTrackDto model)
         {
@@ -67,7 +67,7 @@ namespace SoundwaveWebApi_ITStep.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = Roles.ADMIN, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = $"{Roles.ADMIN},{Roles.PROUSER}", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpDelete("delete")]
         public async Task<IActionResult> Delete(int id)
         {
