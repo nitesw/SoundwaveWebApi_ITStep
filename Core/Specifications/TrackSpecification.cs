@@ -19,6 +19,7 @@ namespace Core.Specifications
                     .Where(x => x.Id == id)
                     .Include(x => x.PlaylistTracks!)
                     .ThenInclude(x => x.Playlist)
+                    .Include(x => x.User)
                     .Include(x => x.Genre);
             }
         }
