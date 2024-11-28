@@ -94,5 +94,48 @@ namespace Core.Services
 
             return _mapper.Map<List<PlaylistDto>>(playlists);
         }
+
+        public async Task AddTrackToPlaylist(int playlistId, int trackId)
+        {
+            bool exists = (await playlistTrackRepo.Get(
+                pt => pt.PlaylistId == playlistId && pt.TrackId == trackId
+            )).Any();
+
+            if (!exists)
+            {
+                PlaylistTrack playlistTrack = new PlaylistTrack
+                {
+                    PlaylistId = playlistId,
+                    TrackId = trackId
+                };
+
+                await playlistTrackRepo.Insert(playlistTrack);
+                await playlistTrackRepo.Save();
+            }
+            else
+            {
+                await RemoveTrackFromPlaylist(playlistId, trackId);
+            }
+        }
+        public async Task RemoveTrackFromPlaylist(int playlistId, int trackId)
+        {
+            bool exists = (await playlistTrackRepo.Get(
+               pt => pt.PlaylistId == playlistId && pt.TrackId == trackId
+            )).Any();
+
+            if (exists)
+            {
+                PlaylistTrack toDelete = (await playlistTrackRepo.Get(
+            pt => pt.PlaylistId == playlistId && pt.TrackId == trackId
+                )).FirstOrDefault()!;
+
+                await playlistTrackRepo.Delete(toDelete);
+                await playlistTrackRepo.Save();
+            }
+            else
+            {
+                await AddTrackToPlaylist(playlistId, trackId);
+            }
+        }
     }
 }

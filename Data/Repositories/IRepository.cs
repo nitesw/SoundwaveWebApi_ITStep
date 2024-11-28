@@ -18,5 +18,10 @@ namespace Data.Repositories
 
         Task RemoveRange(IEnumerable<TEntity> entities);
         Task Detach(TEntity entity);
+
+        Task<IEnumerable<TEntity>> Get(
+            Expression<Func<TEntity, bool>> filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            string includeProperties = "");
     }
 }

@@ -14,5 +14,7 @@ namespace Core.Interfaces
         Task Create(CreatePlaylistDto model);
         Task Edit(EditPlaylistDto model);
         Task Delete(int id);
+        Task AddTrackToPlaylist(int playlistId, int trackId);
+        Task RemoveTrackFromPlaylist(int playlistId, int trackId);
     }
 }

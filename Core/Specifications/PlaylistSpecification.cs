@@ -28,7 +28,8 @@ namespace Core.Specifications
             {
                 Query
                     .Include(x => x.PlaylistTracks!)
-                    .ThenInclude(x => x.Track)
+                    .ThenInclude(x => x.Track!)
+                    .ThenInclude(x => x.Genre)
                     .Include(x => x.User);
             }
         }

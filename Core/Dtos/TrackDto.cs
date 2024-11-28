@@ -24,6 +24,5 @@ namespace Core.Dtos
         public string? GenreName { get; set; }
         public string? UserId { get; set; }
         public string? UserName { get; set; }
-        public ICollection<PlaylistDto>? Playlists { get; set; }
     }
 }

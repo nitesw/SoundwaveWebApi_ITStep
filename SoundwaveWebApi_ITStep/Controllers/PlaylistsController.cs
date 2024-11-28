@@ -61,5 +61,20 @@ namespace SoundwaveWebApi_ITStep.Controllers
 
             return Ok();
         }
+
+        [HttpPut("addTrack")]
+        public async Task<IActionResult> AddTrack(int playlistId, int trackId)
+        {
+            await playlistService.AddTrackToPlaylist(playlistId, trackId);
+
+            return Ok();
+        }
+        [HttpPut("deleteTrack")]
+        public async Task<IActionResult> RemoveTrack(int playlistId, int trackId)
+        {
+            await playlistService.RemoveTrackFromPlaylist(playlistId, trackId);
+
+            return Ok();
+        }
     }
 }
