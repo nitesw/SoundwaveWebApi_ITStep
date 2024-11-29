@@ -16,7 +16,9 @@ namespace Core.Specifications
             {
                 Query
                     .Include(x => x.Tracks)
-                    .Include(x => x.Playlists);
+                    .Include(x => x.Playlists)
+                    .Include(x => x.Likes!)
+                    .ThenInclude(x => x.Track);
             }
         }
         internal class GetUser : Specification<User>
@@ -26,7 +28,9 @@ namespace Core.Specifications
                 Query
                     .Where(x => x.Id == id)
                     .Include(x => x.Tracks)
-                    .Include(x => x.Playlists);
+                    .Include(x => x.Playlists)
+                    .Include(x => x.Likes!)
+                    .ThenInclude(x => x.Track);
             }
         }
     }

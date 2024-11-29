@@ -19,6 +19,8 @@ namespace Core.Specifications
                     .Where(x => x.Id == id)
                     .Include(x => x.PlaylistTracks!)
                     .ThenInclude(x => x.Playlist)
+                    .Include(x => x.Likes!)
+                    .ThenInclude(x => x.User)
                     .Include(x => x.User)
                     .Include(x => x.Genre);
             }
@@ -30,6 +32,8 @@ namespace Core.Specifications
                 Query
                     .Include(x => x.PlaylistTracks!)
                     .ThenInclude(x => x.Playlist)
+                    .Include(x => x.Likes!)
+                    .ThenInclude(x => x.User)
                     .Include(x => x.User)
                     .Include(x => x.Genre);
             }
@@ -40,6 +44,7 @@ namespace Core.Specifications
             {
                 Query
                     .Where(x => x.Id == id)
+                    .Include(x => x.Likes)
                     .Include(x => x.PlaylistTracks);
             }
         }
