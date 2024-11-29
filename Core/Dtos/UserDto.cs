@@ -14,5 +14,6 @@ namespace Core.Dtos
         public string PasswordHash { get; set; }
         public int? PlaylistCount { get; set; }
         public int? TrackCount { get; set; }
+        public string Role { get; set; }
     }
 }

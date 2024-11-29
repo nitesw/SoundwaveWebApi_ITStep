@@ -78,15 +78,32 @@ namespace Core.Services
         public async Task<IEnumerable<UserDto>> GetAll()
         {
             var users = await userRepo.GetListBySpec(new UserSpecification.All());
+            var userDtos = mapper.Map<List<UserDto>>(users);
 
-            return mapper.Map<List<UserDto>>(users);
+            foreach (var userDto in userDtos)
+            {
+                var user = await userRepo.GetById(userDto.Id);
+
+                if (user != null)
+                {
+                    var roles = await userManager.GetRolesAsync(user);
+
+                    userDto.Role = roles[0];
+                }
+            }
+
+            return userDtos;
         }
 
         public async Task<UserDto> Get(string id)
         {
             var user = await userRepo.GetItemBySpec(new UserSpecification.GetUser(id));
+            var userDto = mapper.Map<UserDto>(user);
 
-            return mapper.Map<UserDto>(user);
+            var role = await userManager.GetRolesAsync(user);
+            userDto.Role = role[0];
+
+            return userDto;
         }
 
         public async Task ChangeRole(string id, string role)
