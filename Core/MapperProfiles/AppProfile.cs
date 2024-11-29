@@ -2,6 +2,7 @@
 using Core.Dtos;
 using Data.Entities;
 using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,7 +29,10 @@ namespace Core.MapperProfiles
 
             CreateMap<RegisterDto, User>()
                 .ForMember(x => x.UserName, opt => opt.MapFrom(src => src.UserName));
-            CreateMap<User, UserDto>().ForMember(x => x.TrackCount, opt => opt.MapFrom(src => src.Tracks.Count)).ForMember(x => x.PlaylistCount, opt => opt.MapFrom(src => src.Playlists.Count)).ReverseMap();
+            CreateMap<User, UserDto>()
+                .ForMember(x => x.TrackCount, opt => opt.MapFrom(src => src.Tracks.Count))
+                .ForMember(x => x.PlaylistCount, opt => opt.MapFrom(src => src.Playlists.Count))
+                .ReverseMap();
 
             CreateMap<Genre, GenreDto>().ReverseMap();
         }

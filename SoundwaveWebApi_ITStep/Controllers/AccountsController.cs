@@ -53,5 +53,13 @@ namespace SoundwaveWebApi_ITStep.Controllers
         {
             return Ok();
         }
+
+        [Authorize(Roles = Roles.ADMIN, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPut("changeRole")]
+        public async Task<IActionResult> ChangeRole(string userId, string role)
+        {
+            await accountsService.ChangeRole(userId, role);
+            return Ok();
+        }
     }
 }

@@ -14,5 +14,6 @@ namespace Core.Interfaces
         Task Logout();
         Task<IEnumerable<UserDto>> GetAll();
         Task<UserDto> Get(string id);
+        Task ChangeRole(string id, string role);
     }
 }

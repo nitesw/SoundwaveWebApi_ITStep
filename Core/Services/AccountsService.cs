@@ -88,5 +88,19 @@ namespace Core.Services
 
             return mapper.Map<UserDto>(user);
         }
+
+        public async Task ChangeRole(string id, string role)
+        {
+            var user = await userRepo.GetItemBySpec(new UserSpecification.GetUser(id));
+
+            if (user == null)
+                throw new HttpException("Something went wrong.", HttpStatusCode.BadRequest);
+
+            var roleToDelete = await userManager.GetRolesAsync(user);
+            await userManager.RemoveFromRoleAsync(user, roleToDelete[0]);
+
+            var normalizedRole = role.ToLower() == Roles.ADMIN ? Roles.ADMIN : role.ToLower() == Roles.PROUSER ? Roles.PROUSER : Roles.USER;
+            await userManager.AddToRoleAsync(user, normalizedRole);
+        }
     }
 }
