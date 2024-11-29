@@ -32,12 +32,14 @@ namespace SoundwaveWebApi_ITStep.Controllers
             return Ok(await playlistService.GetAll());
         }
 
+        [Authorize(Roles = $"{Roles.ADMIN},{Roles.PROUSER},{Roles.USER}", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("getPlaylist")]
         public async Task<IActionResult> Get(int id)
         {
             return Ok(await playlistService.Get(id));
         }
 
+        [Authorize(Roles = $"{Roles.ADMIN},{Roles.PROUSER},{Roles.USER}", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromForm] CreatePlaylistDto model)
         {
@@ -46,6 +48,7 @@ namespace SoundwaveWebApi_ITStep.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = $"{Roles.ADMIN},{Roles.PROUSER},{Roles.USER}", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPut("edit")]
         public async Task<IActionResult> Edit([FromForm] EditPlaylistDto model)
         {
@@ -54,6 +57,7 @@ namespace SoundwaveWebApi_ITStep.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = $"{Roles.ADMIN},{Roles.PROUSER},{Roles.USER}", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpDelete("delete")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -62,6 +66,7 @@ namespace SoundwaveWebApi_ITStep.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = $"{Roles.ADMIN},{Roles.PROUSER},{Roles.USER}", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPut("addTrack")]
         public async Task<IActionResult> AddTrack(int playlistId, int trackId)
         {
@@ -69,6 +74,7 @@ namespace SoundwaveWebApi_ITStep.Controllers
 
             return Ok();
         }
+        [Authorize(Roles = $"{Roles.ADMIN},{Roles.PROUSER},{Roles.USER}", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPut("deleteTrack")]
         public async Task<IActionResult> RemoveTrack(int playlistId, int trackId)
         {
