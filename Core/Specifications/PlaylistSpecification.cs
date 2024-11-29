@@ -18,7 +18,8 @@ namespace Core.Specifications
                 Query
                     .Where(x => x.Id == id)
                     .Include(x => x.PlaylistTracks!)
-                    .ThenInclude(x => x.Track)
+                    .ThenInclude(x => x.Track!)
+                        .ThenInclude(track => track.User)
                     .Include(x => x.User);
             }
         }
