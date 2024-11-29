@@ -13,6 +13,7 @@ namespace Data.Data
         public DbSet<Track> Tracks { get; set; }
         public DbSet<Playlist> Playlists { get; set; }
         public DbSet<PlaylistTrack> PlaylistTrack { get; set; }
+        public DbSet<Like> Likes { get; set; }
 
         public SoundwaveDbContext() { }
         public SoundwaveDbContext(DbContextOptions options) : base(options) { }

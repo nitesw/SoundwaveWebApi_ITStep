@@ -6,5 +6,6 @@ namespace Data.Entities
     {
         public ICollection<Track>? Tracks { get; set; }
         public ICollection<Playlist>? Playlists { get; set; }
+        public ICollection<Like>? Likes { get; set; }
     }
 }

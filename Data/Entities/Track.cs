@@ -19,5 +19,6 @@
         public User? User { get; set; }
 
         public ICollection<PlaylistTrack>? PlaylistTracks { get; set; }
+        public ICollection<Like>? Likes { get; set; }
     }
 }

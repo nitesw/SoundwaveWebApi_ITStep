@@ -35,6 +35,9 @@ namespace Core.MapperProfiles
                 .ReverseMap();
 
             CreateMap<Genre, GenreDto>().ReverseMap();
+
+            CreateMap<Like, LikeDto>().ReverseMap();
+            CreateMap<CreateLikeDto, Like>();
         }
     }
 }
